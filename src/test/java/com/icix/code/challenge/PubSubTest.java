@@ -79,4 +79,19 @@ public class PubSubTest extends TestCase {
         assertEquals(listener1.getLastMsg(), msg);
         assertEquals(listener2.getLastMsg(), msg2);
     }
+
+    public void test4() {
+        // test history
+
+        String msg = "this msg is for topic1";
+        pubsub.publish("topic1", msg);
+
+        ListenerTestImpl listener1 = new ListenerTestImpl();
+        assertEquals(listener1.getLastMsg(), null);
+
+        pubsub.subscribe("topic1", listener1, 1);
+
+        // historical message should have been called on listener
+        assertEquals(listener1.getLastMsg(), msg);
+    }
 }
