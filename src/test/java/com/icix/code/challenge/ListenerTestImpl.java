@@ -9,6 +9,7 @@ public class ListenerTestImpl implements Listener {
 
     @Override
     public void callback(String msg) {
+        System.out.println(msg);
         lastMsg = msg;
     }
 

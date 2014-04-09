@@ -2,6 +2,7 @@ package com.icix.code.challenge;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * This is a singleton class used by interested parties to
@@ -52,7 +53,9 @@ public class PubSub {
     public synchronized void subscribe(String topic, Listener listener) {
 
         if (!listnerMap.containsKey(topic)) {
-            listnerMap.put(topic, new HashSet<Listener>());
+            Map<Listener, Boolean> map = new ConcurrentHashMap<Listener, Boolean>();
+            Set<Listener> set = Collections.newSetFromMap(map);
+            listnerMap.put(topic, set);
         }
         Set<Listener> listeners = listnerMap.get(topic);
         listeners.add(listener);
@@ -99,7 +102,7 @@ public class PubSub {
 
         // Add message to history
         if (!historyMap.containsKey(topic)) {
-            historyMap.put(topic, new ArrayList<String>());
+            historyMap.put(topic, Collections.synchronizedList(new ArrayList<String>()));
         }
         historyMap.get(topic).add(message);
 

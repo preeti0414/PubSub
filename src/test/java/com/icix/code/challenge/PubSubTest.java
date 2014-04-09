@@ -94,4 +94,29 @@ public class PubSubTest extends TestCase {
         // historical message should have been called on listener
         assertEquals(listener1.getLastMsg(), msg);
     }
+
+    public void testThreadSafety() {
+        // test thread safety
+
+        SubscriberThread subThread1 = new SubscriberThread("topic1");
+        SubscriberThread subThread2 = new SubscriberThread("topic2");
+
+        PublisherThread pubThread1 = new PublisherThread("topic1");
+        PublisherThread pubThread2 = new PublisherThread("topic2");
+
+        subThread1.start();
+        subThread2.start();
+        pubThread1.start();
+        pubThread2.start();
+
+        try {
+            subThread1.join();
+            subThread2.join();
+            pubThread1.join();
+            pubThread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
